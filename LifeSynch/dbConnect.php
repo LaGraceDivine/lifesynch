@@ -1,9 +1,9 @@
 <?php
-  $db_host = '127.0.0.1';
-  $db_user = 'root';
-  $db_password = 'root';
+  $db_host = 'localhost';
+  $db_user = 'igirubuntu';
+  $db_password = 'igirubuntu';
   $db_db = 'LifeSynch';
-  $db_port = 8889;
+  $db_port = 3306;
 
   $conn = new mysqli(
     $db_host,
