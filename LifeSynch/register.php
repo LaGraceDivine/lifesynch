@@ -208,7 +208,7 @@
                 <p>Please fill out all fields correctly.</p>
             </div>
 
-            <form id="registerForm" action="register_action.php" method="POST" >
+            <form id="registerForm">
                 <div class="form-group">
                     <label for="username">Username:</label>
                     <input type="text" id="username" name="username" placeholder="Enter your username" required>
@@ -268,7 +268,7 @@
                 }
 
                 $.ajax({
-                    url: "/register_action.php",
+                    url: 'register_action.php',
                     type: 'POST',
                     dataType: 'json',
                     data: {
