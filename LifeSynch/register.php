@@ -208,7 +208,7 @@
                 <p>Please fill out all fields correctly.</p>
             </div>
 
-            <form id="registerForm">
+            <form id="registerForm" action="register_action.php" method="POST" >
                 <div class="form-group">
                     <label for="username">Username:</label>
                     <input type="text" id="username" name="username" placeholder="Enter your username" required>
@@ -250,57 +250,6 @@
     <footer>
         <p>&copy; 2024 LifeSynch. All rights reserved.</p>
     </footer>
-
-    <script>
-        $(document).ready(function () {
-            $('#registerForm').on('submit', function (e) {
-                e.preventDefault();
-
-                 username = $('#username').val();
-                 email = $('#email').val();
-                 password = $('#password').val();
-
-                console.log(username,email,password)
-
-                if (username===null || email=== null || password===null) {
-                    showErrorMessage("Please fill in all fields.");
-                    return;
-                }
-
-                $.ajax({
-                    url: 'register_action.php',
-                    type: 'POST',
-                    dataType: 'json',
-                    data: {
-                        username: username,
-                        email: email,
-                        password: password
-                    },
-                    beforeSend: function () {
-                        $('#error-message').hide();
-                        $('#loading').show();
-                    },
-                    success: function (response) {
-                        $('#loading').hide();
-
-                        if (response.success) {
-                            window.location.href = "login.php";
-                        } else {
-                            showErrorMessage(response.message);
-                        }
-                    },
-                    error: function () {
-                        $('#loading').hide();
-                        showErrorMessage("Registration failed. Please try again.");
-                    }
-                });
-            });
-
-            function showErrorMessage(message) {
-                $('#error-message').text(message).show();
-            }
-        });
-    </script>
 
 </body>
 </html>
