@@ -268,7 +268,7 @@
                 }
 
                 $.ajax({
-                    url: 'register_action.php',
+                    url: "/register_action.php",
                     type: 'POST',
                     dataType: 'json',
                     data: {
