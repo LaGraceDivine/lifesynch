@@ -16,7 +16,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['username'], $_POST['em
     $username = htmlspecialchars(trim($_POST['username']));
     $email = trim($_POST['email']);
     $password = $_POST['password'];
-    $timezone = 'gh'; // Default timezone
+    $timezone = 'gh'; 
+    $roleid = 1;// Default timezone
 
     // Validate input fields
     if (empty($username) || empty($email) || empty($password)) {
@@ -60,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['username'], $_POST['em
     $createdAt = $updatedAt = date("Y-m-d H:i:s");
 
     // Insert new user into the database
-    $sql = "INSERT INTO users (username, email, password, timezone, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO users (username, email, password, timezone, created_at, updated_at, RoleID) VALUES (?, ?, ?, ?, ?,?, ?)";
     $stmt = $conn->prepare($sql);
 
     if ($stmt === false) {
@@ -69,7 +70,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['username'], $_POST['em
         exit();
     }
 
-    $stmt->bind_param("ssssss", $username, $email, $hashedPassword, $timezone, $createdAt, $updatedAt);
+    $stmt->bind_param("sssssss", $username, $email, $hashedPassword, $timezone, $createdAt, $updatedAt,$roleid);
 
     // Execute the statement and check for success
     if ($stmt->execute()) {
