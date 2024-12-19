@@ -404,10 +404,10 @@ var_dump($chatbot_data);
             </tr>
             <?php foreach ($users as $user): ?>
             <tr>
-                <td><?= $user['id']?></td>
+                <td><?= htmlspecialchars($user['id'])?></td>
                 <td><?= htmlspecialchars($user['username']) ?></td>
                 <td><?= htmlspecialchars($user['email']) ?></td>
-                <td><?= htmlspecialchars($user['RoleID']) ?></td>
+                <td><?= htmlspecialchars($user['RoleName']) ?></td>
                 <td><?= htmlspecialchars($user['IsApproved'] ? 'Yes' : 'No') ?></td>
                 <td>
                     <form method="post" style="display:inline;">
