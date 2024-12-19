@@ -94,16 +94,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
     }
 }
 
-// Get the current page from the query parameter or set to 1 if not set
 $page = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
 
-// Define the number of items per page
+
 $limit = 100;
 
-// Calculate the offset based on the current page
 $offset = ($page - 1) * $limit;
 
-// Prepare the SQL query for fetching users with pagination
 $query = "
     SELECT u.id, u.username, u.email, r.RoleName, u.IsApproved 
     FROM users u
@@ -111,30 +108,22 @@ $query = "
     LIMIT ? OFFSET ?
 ";
 
-// Prepare the statement
 $stmt = mysqli_prepare($conn, $query);
 
-// Bind the parameters to the statement (limit and offset)
 mysqli_stmt_bind_param($stmt, "ii", $limit, $offset);
 
-// Execute the query
 mysqli_stmt_execute($stmt);
 
-// Get the result
 $result = mysqli_stmt_get_result($stmt);
 
-// Fetch all results as an associative array
 $users = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
-// Fetch the chatbot data (last 50 messages)
 $queryMessages = "SELECT * FROM messages LIMIT 50";
 $resultMessages = mysqli_query($conn, $queryMessages);
 $chatbot_data = mysqli_fetch_all($resultMessages, MYSQLI_ASSOC);
 
-// Close the prepared statement
 mysqli_stmt_close($stmt);
 
-// Optionally close the database connection
 mysqli_close($conn);
 ?>
 

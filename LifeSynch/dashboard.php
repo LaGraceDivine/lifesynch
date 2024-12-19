@@ -51,6 +51,8 @@ function fetchApiContent($url) {
 
     return $response;
 }
+
+$user_role = isset($_SESSION['user_role']) ? $_SESSION['user_role'] : 'user';
 ?>
 
 
@@ -195,7 +197,8 @@ function fetchApiContent($url) {
         <ul>
             <li><a href="dashboard.php"><i class="icon-home"></i>Dashboard</a></li>
             <li><a href="profile.php"><i class="icon-profile"></i>Profile</a></li>
-            <li><a href="adminDashboard.php"><i class = "icon-profile"></i>Admin Dashboard</a><li>
+            <?php if ($user_role == 'admin'): ?>
+            <li><a href="adminDashboard.php"><i class="icon-profile"></i>Admin Dashboard</a></li><?php endif; ?>
             <li><a href="logout_action.php"><i class="icon-logout"></i>Logout</a></li>
         </ul>
     </div>
