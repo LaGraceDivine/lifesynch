@@ -25,6 +25,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reminder_time']))
     }
 }
 
+$userId = isset($_SESSION['userId']) ? $_SESSION['userId'] : 0;
+$query = "SELECT reminder_time FROM water_reminders WHERE user_id = '$userId'";
+$result = $conn->query($query);
+$reminders = [];
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $reminders[] = $row['reminder_time'];
+    }
+}
+$conn->close();
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['time'])) {
+    $userId = isset($_SESSION['userId']) ? $_SESSION['userId'] : 0;
+    $reminderTime = $_GET['time'];
+
+    if ($userId && $reminderTime) {
+        $stmt = $conn->prepare("DELETE FROM water_reminders WHERE user_id = ? AND reminder_time = ?");
+        $stmt->bind_param("is", $userId, $reminderTime);
+        $stmt->execute();
+        $stmt->close();
+
+        header("Location: water-reminder.php");
+        exit();
+    } else {
+        header("Location: hydration-tracker.php");
+        exit();
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
