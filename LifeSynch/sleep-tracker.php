@@ -297,31 +297,44 @@ $userId = $_SESSION["userId"];
         </div>
     </div>
 
-    <script>
-        function saveSleepAndWakeTime(user) {
-            var sleepTime = document.getElementById('sleep-time').value;
-            var wakeTime = document.getElementById('wake-time').value;
+<script> 
+    function saveSleepAndWakeTime(user) {
+    var sleepTime = document.getElementById('sleep-time').value;
+    var wakeTime = document.getElementById('wake-time').value;
 
-            if (sleepTime && wakeTime) {
-                var userId = user;
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', 'sleep_tracker_action.php', true);
-                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                
-                xhr.onload = function() {
-                    try {
-                        var response = JSON.parse(xhr.responseText);
-                        alert(response.message);
-                    } catch (e) {
-                        alert('Error parsing response');
-                    }
-                };
-
-                xhr.send('user_id=' + userId + '&sleep_time=' + sleepTime + '&wake_time=' + wakeTime);
-            } else {
-                alert("Please enter both sleep time and wake time.");
+    if (sleepTime && wakeTime) {
+        var userId = user;
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'sleep_tracker_action.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        
+        xhr.onload = function() {
+            // Log the response text to help with debugging
+            console.log('Response Text: ' + xhr.responseText);
+            
+            try {
+                // Attempt to parse the response as JSON
+                var response = JSON.parse(xhr.responseText);
+                alert(response.message);
+            } catch (e) {
+                // If parsing fails, log the error and display an alert
+                alert('Error parsing response');
+                console.error('Error:', e);
+                console.error('Response:', xhr.responseText);  // Log the actual response
             }
-        }
+        };
+
+        xhr.onerror = function() {
+            // If the request fails entirely (network or server error), log it
+            alert('Request failed');
+            console.error('Request failed with status:', xhr.status);
+        };
+
+        xhr.send('user_id=' + userId + '&sleep_time=' + sleepTime + '&wake_time=' + wakeTime);
+    } else {
+        alert("Please enter both sleep time and wake time.");
+    }
+}
 
         function toggleNavbar() {
             var navbar = document.querySelector('.navbar');
