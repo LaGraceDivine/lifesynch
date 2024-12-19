@@ -16,6 +16,7 @@ $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
 $stmt->close();
+var_dump($user);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
   $username = $_POST['username'];
