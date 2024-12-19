@@ -1,26 +1,25 @@
 <?php
 include('dbConnect.php');
 
-function saveSleepAndWakeTime(user) {
-    var sleepTime = document.getElementById('sleep-time').value;
-    var wakeTime = document.getElementById('wake-time').value;
+if (isset($_POST['user_id']) && isset($_POST['sleep_time']) && isset($_POST['wake_time'])) {
+    $user_id = mysqli_real_escape_string($conn, $_POST['user_id']);
+    $sleep_time = mysqli_real_escape_string($conn, $_POST['sleep_time']);
+    $wake_time = mysqli_real_escape_string($conn, $_POST['wake_time']);
 
-    if (sleepTime && wakeTime) {
-        var userId = user;
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'sleep_tracker_action.php', true);
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        
-        xhr.onload = function() {
-            var response = JSON.parse(xhr.responseText);
-            alert(response.message);
-        };
+    $query = "INSERT INTO sleep_data (user_id, sleep_time, wake_time) 
+              VALUES ('$user_id', '$sleep_time', '$wake_time')";
 
-        xhr.send('user_id=' + userId + '&sleep_time=' + sleepTime + '&wake_time=' + wakeTime);
+    if (mysqli_query($conn, $query)) {
+        $response = array("status" => "success", "message" => "Sleep and wake time saved successfully.");
+        echo json_encode($response);
     } else {
-        alert("Please enter both sleep time and wake time.");
+        $response = array("status" => "error", "message" => "Failed to save sleep and wake time.");
+        echo json_encode($response);
     }
+} else {
+    $response = array("status" => "error", "message" => "Required fields are missing.");
+    echo json_encode($response);
 }
 
-
-
+mysqli_close($conn);
+?>
