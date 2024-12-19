@@ -109,11 +109,20 @@ $query = "
     SELECT u.UserID, u.Username, u.Email, r.RoleName, u.IsApproved 
     FROM users u
     JOIN Roles r ON u.RoleID = r.RoleID
-    LIMIT $limit OFFSET $offset
+    LIMIT ? OFFSET ?
 ";
 
-// Execute the query using mysqli
-$result = mysqli_query($conn, $query);
+// Prepare the statement
+$stmt = mysqli_prepare($conn, $query);
+
+// Bind the parameters to the statement (limit and offset)
+mysqli_stmt_bind_param($stmt, "ii", $limit, $offset);
+
+// Execute the query
+mysqli_stmt_execute($stmt);
+
+// Get the result
+$result = mysqli_stmt_get_result($stmt);
 
 // Fetch all results as an associative array
 $users = mysqli_fetch_all($result, MYSQLI_ASSOC);
@@ -122,6 +131,15 @@ $users = mysqli_fetch_all($result, MYSQLI_ASSOC);
 $queryMessages = "SELECT * FROM messages LIMIT 50";
 $resultMessages = mysqli_query($conn, $queryMessages);
 $chatbot_data = mysqli_fetch_all($resultMessages, MYSQLI_ASSOC);
+
+// Close the prepared statement
+mysqli_stmt_close($stmt);
+
+// Optionally close the database connection
+mysqli_close($conn);
+
+var_dump($users);
+var_dump($chatbot_data);
 
 ?>
 
