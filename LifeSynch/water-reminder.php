@@ -2,7 +2,6 @@
 
 include 'dbConnect.php';
 session_start();
-var_dump($_SESSION);
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reminder_time'])) 
 {
     
@@ -39,33 +38,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['time']))
 {
     $userId = isset($_SESSION['userId']) ? $_SESSION['userId'] : 0;
     $reminderTime = $_GET['time'];
-    echo "Reminder Time: " . $reminderTime;
-    echo "User ID: " . $userId;
-
-    if (!$conn) 
-    {
-        die("Connection failed: " . mysqli_connect_error());
-    }
 
     if ($userId && $reminderTime) 
     {
-        echo "Valid userId and remainder time\n";
         $stmt = $conn->prepare("DELETE FROM water_reminders WHERE user_id = ? AND reminder_time = ?");
-        echo $conn->error;
-        if ($stmt === false) 
-        {
-            echo "Statement is false";
-            die('MySQL prepare error: ' . $conn->error);
-        }
-        else
-        {
-            echo "Statement is true";
-        }
-        echo "Statement prepared\n";
         $stmt->bind_param("is", $userId, $reminderTime);
         $stmt->execute();
         $stmt->close();
-        echo "Done reminding";
         header("Location: water-reminder.php");
         exit();
     } else {
