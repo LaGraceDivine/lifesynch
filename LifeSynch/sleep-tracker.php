@@ -283,56 +283,43 @@ $userId = $_SESSION["userId"];
         <div>
             <label for="sleep-time">Sleep Time:</label>
             <input type="datetime-local" id="sleep-time" required>
-            <button onclick="saveSleepTime(<?php echo $userId; ?>)">Save Sleep Time</button>
         </div>
         <br>
         <br>
         <div>
             <label for="wake-time">Wake Time:</label>
             <input type="datetime-local" id="wake-time" required>
-            <button onclick="saveWakeTime(<?php echo $userId; ?>)">Save Wake Time</button>
+        </div>
+        <br>
+        <br>
+        <div>
+            <button onclick="saveSleepAndWakeTime(<?php echo $userId; ?>)">Save Sleep and Wake Time</button>
         </div>
     </div>
 
+
     <script>
        
-        function saveSleepTime(user) {
-            var sleepTime = document.getElementById('sleep-time').value; 
-            if (sleepTime) {
-                var userId = user;
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', 'sleep_tracker_action.php', true);
-                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                
-                xhr.onload = function() {
-                    var response = JSON.parse(xhr.responseText);
-                    alert(response.message);
-                };
-                
-                xhr.send('user_id=' + userId + '&sleep_time=' + sleepTime);
-            } else {
-                alert("Please enter a valid sleep time.");
-            }
-        }
+       function saveSleepAndWakeTime(user) {
+    var sleepTime = document.getElementById('sleep-time').value;
+    var wakeTime = document.getElementById('wake-time').value;
 
-        function saveWakeTime(user) {
-            var wakeTime = document.getElementById('wake-time').value; 
-            if (wakeTime) {
-                var userId = user;
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', 'sleep_tracker_action.php', true);
-                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                
-                xhr.onload = function() {
-                    var response = JSON.parse(xhr.responseText);
-                    alert(response.message);
-                };
-                
-                xhr.send('user_id=' + userId + '&wake_time=' + wakeTime);
-            } else {
-                alert("Please enter a valid wake time.");
-            }
-        }
+    if (sleepTime && wakeTime) {
+        var userId = user;
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'sleep_tracker_action.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        
+        xhr.onload = function() {
+            var response = JSON.parse(xhr.responseText);
+            alert(response.message);
+        };
+
+        xhr.send('user_id=' + userId + '&sleep_time=' + sleepTime + '&wake_time=' + wakeTime);
+    } else {
+        alert("Please enter both sleep time and wake time.");
+    }
+}
 
         function toggleNavbar() {
             var navbar = document.querySelector('.navbar');

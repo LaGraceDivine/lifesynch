@@ -1,38 +1,29 @@
 <?php
 include('dbConnect.php');
 
-if (isset($_POST['user_id']) && isset($_POST['sleep_time']) && isset($_POST['wake_time'])) {
-    $user_id = $_POST['user_id'];
-    $sleep_time = $_POST['sleep_time'];
-    $wake_time = $_POST['wake_time'];
+function saveSleepAndWakeTime(user) {
+    var sleepTime = document.getElementById('sleep-time').value;
+    var wakeTime = document.getElementById('wake-time').value;
 
-
-    $sleep_time = str_replace("T", " ", $sleep_time) . ":00";
-    $wake_time = str_replace("T", " ", $wake_time) . ":00";
-
-    $created_at = date('Y-m-d H:i:s');
-
-    $query = "INSERT INTO sleep_tracker (user_id, sleep_time, wake_time, created_at) 
-              VALUES (?, ?, ?, ?)";
-    if ($stmt = mysqli_prepare($conn, $query)) {
+    // Check if both sleep and wake times are entered
+    if (sleepTime && wakeTime) {
+        var userId = user;
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'sleep_tracker_action.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         
+        xhr.onload = function() {
+            var response = JSON.parse(xhr.responseText);
+            alert(response.message);  // Show response message
+        };
 
-        mysqli_stmt_bind_param($stmt, "isss", $user_id, $sleep_time, $wake_time, $created_at);
-
-        if (mysqli_stmt_execute($stmt)) {
-            echo json_encode(['status' => 'success', 'message' => 'Sleep time recorded']);
-        } else {
-            echo json_encode(['status' => 'error', 'message' => mysqli_error($conn)]);
-        }
-
-        mysqli_stmt_close($stmt);
+        // Send both sleep and wake time together
+        xhr.send('user_id=' + userId + '&sleep_time=' + sleepTime + '&wake_time=' + wakeTime);
     } else {
-        echo json_encode(['status' => 'error', 'message' => 'Failed to prepare the query']);
+        // Alert if either sleep or wake time is missing
+        alert("Please enter both sleep time and wake time.");
     }
-} else {
-    echo json_encode(['status' => 'error', 'message' => 'Missing data']);
 }
-?>
 
 
 
