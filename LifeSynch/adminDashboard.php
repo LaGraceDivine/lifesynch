@@ -4,56 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 10px;
-            border: 1px solid #ddd;
-            text-align: left;
-        }
-        th {
-            background-color: #f4f4f4;
-        }
-        .form-container {
-            margin: 20px 0;
-        }
-        .form-container input, .form-container select, .form-container button {
-            padding: 10px;
-            margin: 5px 0;
-            width: 100%;
-        }
-        .form-container button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .form-container button:hover {
-            background-color: #45a049;
-        }
-        nav {
-            background-color: #333;
-            padding: 10px;
-        }
-        nav a {
-            color: white;
-            margin-right: 15px;
-            text-decoration: none;
-        }
-        nav a:hover {
-            text-decoration: underline;
-        }
-        section {
-            margin-bottom: 40px;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -66,82 +17,7 @@
 
     <h1>Admin Dashboard</h1>
 
-    <?php
-    // Start the session
-    session_start();
-
-    try {
-        // Connect to the SQLite database
-        $db = new PDO('sqlite:database.db');
-        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-        // Handle the form submissions for creating, updating, deleting, and approving users
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (isset($_POST['create'])) {
-                $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
-                $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-                $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING);
-                $role_id = filter_input(INPUT_POST, 'role_id', FILTER_SANITIZE_NUMBER_INT);
-
-                if ($username && $email && $password && $role_id) {
-                    $stmt = $db->prepare("INSERT INTO users (Username, Email, PasswordHash, RoleID, IsApproved) VALUES (?, ?, ?, ?, ?)");
-                    $stmt->execute([
-                        $username,
-                        $email,
-                        password_hash($password, PASSWORD_DEFAULT),
-                        $role_id,
-                        0 // Default IsApproved as 0
-                    ]);
-                }
-            }
-
-            if (isset($_POST['update'])) {
-                $user_id = filter_input(INPUT_POST, 'user_id', FILTER_SANITIZE_NUMBER_INT);
-                $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
-                $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-                $role_id = filter_input(INPUT_POST, 'role_id', FILTER_SANITIZE_NUMBER_INT);
-
-                if ($user_id && $username && $email && $role_id) {
-                    $stmt = $db->prepare("UPDATE users SET Username = ?, Email = ?, RoleID = ? WHERE UserID = ?");
-                    $stmt->execute([
-                        $username,
-                        $email,
-                        $role_id,
-                        $user_id
-                    ]);
-                }
-            }
-
-            if (isset($_POST['delete'])) {
-                $user_id = filter_input(INPUT_POST, 'user_id', FILTER_SANITIZE_NUMBER_INT);
-
-                if ($user_id) {
-                    $stmt = $db->prepare("DELETE FROM users WHERE UserID = ?");
-                    $stmt->execute([$user_id]);
-                }
-            }
-
-            if (isset($_POST['approve'])) {
-                $user_id = filter_input(INPUT_POST, 'user_id', FILTER_SANITIZE_NUMBER_INT);
-
-                if ($user_id) {
-                    $stmt = $db->prepare("UPDATE users SET IsApproved = 1 WHERE UserID = ?");
-                    $stmt->execute([$user_id]);
-                }
-            }
-        }
-
-        // Fetch all users
-        $users = $db->query("SELECT * FROM users")->fetchAll(PDO::FETCH_ASSOC);
-
-        // Fetch chatbot data (example table)
-        $chatbot_data = $db->query("SELECT * FROM messages")->fetchAll(PDO::FETCH_ASSOC);
-
-    } catch (PDOException $e) {
-        echo "Error: " . $e->getMessage();
-        exit;
-    }
-    ?>
+    <?php include('process.php'); ?>
 
     <!-- List of Users Section -->
     <section id="users">
@@ -227,6 +103,8 @@
             <?php endforeach; ?>
         </table>
     </section>
+
+    <script src="script.js"></script>
 
 </body>
 </html>
