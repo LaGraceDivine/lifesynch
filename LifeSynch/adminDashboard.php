@@ -464,7 +464,7 @@ var_dump($chatbot_data);
             </tr>
             <?php foreach ($chatbot_data as $data): ?>
             <tr>
-                <td><?= htmlspecialchars($data['username']) ?></td>
+                <td><?= htmlspecialchars($data['name']) ?></td>
                 <td><?= htmlspecialchars($data['email']) ?></td>
                 <td><?= htmlspecialchars($data['question']) ?></td>
             </tr>
