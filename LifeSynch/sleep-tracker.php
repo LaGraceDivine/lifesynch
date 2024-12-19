@@ -285,11 +285,9 @@ $userId = $_SESSION["userId"];
             <input type="datetime-local" id="sleep-time" required>
             <button onclick="saveSleepTime(<?php echo $userId; ?>)">Save Sleep Time</button>
         </div>
-
+        <br>
+        <br>
         <div>
-            <label for="sleep-time">Select time you last slept:</label>
-            <input type="datetime-local" id="sleep-time" required>
-            <button onclick="saveSleepTime(<?php echo $userId; ?>)">Save Sleep Time</button>
             <label for="wake-time">Wake Time:</label>
             <input type="datetime-local" id="wake-time" required>
             <button onclick="saveWakeTime(<?php echo $userId; ?>)">Save Wake Time</button>
@@ -315,24 +313,24 @@ $userId = $_SESSION["userId"];
             } else {
                 alert("Please enter a valid sleep time.");
             }
-  }
-
+        }
 
         function saveWakeTime(user) {
-            var wakeTime = document.getElementById('wake-time').value;
-            var sleepTime = document.getElementById('sleep-time').value;
-            if (wakeTime && sleepTime) {
-                var userId = user
+            var wakeTime = document.getElementById('wake-time').value; 
+            if (wakeTime) {
+                var userId = user;
                 var xhr = new XMLHttpRequest();
-                xhr.open('POST', '', true);
+                xhr.open('POST', 'sleep_tracker_action.php', true);
                 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                
                 xhr.onload = function() {
                     var response = JSON.parse(xhr.responseText);
                     alert(response.message);
                 };
-                xhr.send('user_id=' + userId + '&wake_time=' + wakeTime + '&sleep_time=' + sleepTime);
+                
+                xhr.send('user_id=' + userId + '&wake_time=' + wakeTime);
             } else {
-                alert("Please enter both sleep and wake times.");
+                alert("Please enter a valid wake time.");
             }
         }
 
