@@ -81,7 +81,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['upload_picture'])) {
         $imageFileType = strtolower(pathinfo($uploadFile, PATHINFO_EXTENSION));
         if (in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) 
         {
-            echo $_FILES['profile_picture']['tmp_name'];
             if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $uploadFile)) 
             {
                 $stmt = $conn->prepare("UPDATE users SET profile_picture = ? WHERE id = ?");
