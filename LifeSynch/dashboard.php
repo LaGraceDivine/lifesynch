@@ -52,7 +52,7 @@ function fetchApiContent($url) {
     return $response;
 }
 
-$user_role = isset($_SESSION['user_role']) ? $_SESSION['user_role'] : 'user';
+$user_role = isset($_SESSION['user_role']) ? $_SESSION['user_role'] : 'admin';
 ?>
 
 
