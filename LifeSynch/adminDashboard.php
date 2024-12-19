@@ -1,129 +1,113 @@
 <?php
-session_start();
+include'dbConnect';
 
-include 'dbConnect.php';
+function isAuthorized() {
+    return isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
+}
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-
-try {
-    $db = new PDO(DSN, DB_USER, DB_PASSWORD);
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    function isAuthorized() {
-        return isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!isAuthorized()) {
+        echo "Unauthorized action.";
+        exit;
     }
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        if (!isAuthorized()) {
-            echo "Unauthorized action.";
+    if (isset($_POST['create'])) {
+        $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
+        $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+        $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING);
+        $role_id = filter_input(INPUT_POST, 'role_id', FILTER_SANITIZE_NUMBER_INT);
+
+        $roleCheckStmt = $db->prepare("SELECT COUNT(*) FROM Roles WHERE RoleID = ?");
+        $roleCheckStmt->execute([$role_id]);
+        if ($roleCheckStmt->fetchColumn() == 0) {
+            echo "Invalid RoleID.";
             exit;
         }
 
-        if (isset($_POST['create'])) {
-            $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
-            $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-            $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING);
-            $role_id = filter_input(INPUT_POST, 'role_id', FILTER_SANITIZE_NUMBER_INT);
-
-            $roleCheckStmt = $db->prepare("SELECT COUNT(*) FROM Roles WHERE RoleID = ?");
-            $roleCheckStmt->execute([$role_id]);
-            if ($roleCheckStmt->fetchColumn() == 0) {
-                echo "Invalid RoleID.";
-                exit;
-            }
-
-            if ($username && $email && $password && $role_id) {
-                $stmt = $db->prepare("INSERT INTO users (Username, Email, PasswordHash, RoleID, IsApproved) VALUES (?, ?, ?, ?, ?)");
-                $stmt->execute([
-                    $username,
-                    $email,
-                    password_hash($password, PASSWORD_DEFAULT),
-                    $role_id,
-                    1234
-                ]);
-                echo "User created successfully.";
-            } else {
-                echo "Invalid input for creating a user.";
-            }
-        }
-
-        if (isset($_POST['update'])) {
-            $user_id = filter_input(INPUT_POST, 'user_id', FILTER_SANITIZE_NUMBER_INT);
-            $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
-            $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-            $role_id = filter_input(INPUT_POST, 'role_id', FILTER_SANITIZE_NUMBER_INT);
-
-            $roleCheckStmt = $db->prepare("SELECT COUNT(*) FROM Roles WHERE RoleID = ?");
-            $roleCheckStmt->execute([$role_id]);
-            if ($roleCheckStmt->fetchColumn() == 0) {
-                echo "Invalid RoleID.";
-                exit;
-            }
-
-            if ($user_id && $username && $email && $role_id) {
-                $stmt = $db->prepare("UPDATE users SET Username = ?, Email = ?, RoleID = ? WHERE UserID = ?");
-                $stmt->execute([
-                    $username,
-                    $email,
-                    $role_id,
-                    $user_id
-                ]);
-                echo "User updated successfully.";
-            } else {
-                echo "Invalid input for updating a user.";
-            }
-        }
-
-        if (isset($_POST['delete'])) {
-            $user_id = filter_input(INPUT_POST, 'user_id', FILTER_SANITIZE_NUMBER_INT);
-
-            if ($user_id) {
-                $stmt = $db->prepare("DELETE FROM users WHERE UserID = ?");
-                $stmt->execute([$user_id]);
-                echo "User deleted successfully.";
-            } else {
-                echo "Invalid input for deleting a user.";
-            }
-        }
-
-        if (isset($_POST['approve'])) {
-            $user_id = filter_input(INPUT_POST, 'user_id', FILTER_SANITIZE_NUMBER_INT);
-
-            if ($user_id) {
-                $stmt = $db->prepare("UPDATE users SET IsApproved = 1 WHERE UserID = ?");
-                $stmt->execute([$user_id]);
-                echo "User approved successfully.";
-            } else {
-                echo "Invalid input for approving a user.";
-            }
+        if ($username && $email && $password && $role_id) {
+            $stmt = $db->prepare("INSERT INTO users (Username, Email, PasswordHash, RoleID, IsApproved) VALUES (?, ?, ?, ?, ?)");
+            $stmt->execute([
+                $username,
+                $email,
+                password_hash($password, PASSWORD_DEFAULT),
+                $role_id,
+                1234
+            ]);
+            echo "User created successfully.";
+        } else {
+            echo "Invalid input for creating a user.";
         }
     }
 
-    $page = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
-    $limit = 100;
-    $offset = ($page - 1) * $limit;
-    $stmt = $db->prepare("
-        SELECT u.UserID, u.Username, u.Email, r.RoleName, u.IsApproved 
-        FROM users u 
-        JOIN Roles r ON u.RoleID = r.RoleID 
-        LIMIT :limit OFFSET :offset
-    ");
-    $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-    $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-    $stmt->execute();
-    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    if (isset($_POST['update'])) {
+        $user_id = filter_input(INPUT_POST, 'user_id', FILTER_SANITIZE_NUMBER_INT);
+        $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
+        $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+        $role_id = filter_input(INPUT_POST, 'role_id', FILTER_SANITIZE_NUMBER_INT);
 
-    $stmt = $db->query("SELECT * FROM messages LIMIT 50");
-    $chatbot_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $roleCheckStmt = $db->prepare("SELECT COUNT(*) FROM Roles WHERE RoleID = ?");
+        $roleCheckStmt->execute([$role_id]);
+        if ($roleCheckStmt->fetchColumn() == 0) {
+            echo "Invalid RoleID.";
+            exit;
+        }
 
-} catch (PDOException $e) {
-    error_log($e->getMessage(), 3, 'error_log.txt');
-    echo "An error occurred. Please try again later.";
-    exit;
+        if ($user_id && $username && $email && $role_id) {
+            $stmt = $db->prepare("UPDATE users SET Username = ?, Email = ?, RoleID = ? WHERE UserID = ?");
+            $stmt->execute([
+                $username,
+                $email,
+                $role_id,
+                $user_id
+            ]);
+            echo "User updated successfully.";
+        } else {
+            echo "Invalid input for updating a user.";
+        }
+    }
+
+    if (isset($_POST['delete'])) {
+        $user_id = filter_input(INPUT_POST, 'user_id', FILTER_SANITIZE_NUMBER_INT);
+
+        if ($user_id) {
+            $stmt = $db->prepare("DELETE FROM users WHERE UserID = ?");
+            $stmt->execute([$user_id]);
+            echo "User deleted successfully.";
+        } else {
+            echo "Invalid input for deleting a user.";
+        }
+    }
+
+    if (isset($_POST['approve'])) {
+        $user_id = filter_input(INPUT_POST, 'user_id', FILTER_SANITIZE_NUMBER_INT);
+
+        if ($user_id) {
+            $stmt = $db->prepare("UPDATE users SET IsApproved = 1 WHERE UserID = ?");
+            $stmt->execute([$user_id]);
+            echo "User approved successfully.";
+        } else {
+            echo "Invalid input for approving a user.";
+        }
+    }
 }
+
+$page = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
+$limit = 100;
+$offset = ($page - 1) * $limit;
+$stmt = $db->prepare("
+    SELECT u.UserID, u.Username, u.Email, r.RoleName, u.IsApproved 
+    FROM users u 
+    JOIN Roles r ON u.RoleID = r.RoleID 
+    LIMIT :limit OFFSET :offset
+");
+$stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+$stmt->execute();
+$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$stmt = $db->query("SELECT * FROM messages LIMIT 50");
+$chatbot_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 
