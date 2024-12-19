@@ -436,7 +436,7 @@ $conn->close();
         <div id="message"></div>
 
         <div class="profile-picture">
-            <img id="profileImg" src="<?= htmlspecialchars($user['profile_picture'] ?? 'default.png') ?>" alt="Profile Picture">
+            <img id="profileImg" src="<?= htmlspecialchars($user['profile_picture'] ?? 'https://img.freepik.com/free-psd/3d-icon-social-media-app_23-2150049569.jpg') ?>" alt="Profile Picture">
         </div>
 
         <form id="uploadForm" enctype="multipart/form-data">
