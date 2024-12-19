@@ -106,7 +106,7 @@ $offset = ($page - 1) * $limit;
 
 // Prepare the SQL query for fetching users with pagination
 $query = "
-    SELECT u.UserID, u.Username, u.Email, r.RoleName, u.IsApproved 
+    SELECT u.id, u.username, u.email, r.RoleName, u.IsApproved 
     FROM users u
     JOIN Roles r ON u.RoleID = r.RoleID
     LIMIT ? OFFSET ?
