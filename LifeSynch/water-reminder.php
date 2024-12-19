@@ -39,6 +39,8 @@ $conn->close();
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['time'])) {
     $userId = isset($_SESSION['userId']) ? $_SESSION['userId'] : 0;
     $reminderTime = $_GET['time'];
+    echo "Reminder Time: " . $reminderTime;
+    echo "User ID: " . $userId;
 
     if ($userId && $reminderTime) {
         $stmt = $conn->prepare("DELETE FROM water_reminders WHERE user_id = ? AND reminder_time = ?");
