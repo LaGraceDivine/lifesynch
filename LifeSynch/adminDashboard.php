@@ -3,16 +3,17 @@ include 'dbConnect';
 session_start();
 var_dump($_SESSION);
 
-function isAuthorized() 
-{
-    return isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
-}
+// function isAuthorized() 
+// {
+//     return isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
+// }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!isAuthorized()) {
-        echo "Unauthorized action.";
-        exit;
-    }
+if ($_SERVER['REQUEST_METHOD'] === 'POST') 
+{
+    // if (!isAuthorized()) {
+    //     echo "Unauthorized action.";
+    //     exit;
+    // }
 
     if (isset($_POST['create'])) {
         $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
@@ -94,22 +95,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$page = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
-$limit = 100;
-$offset = ($page - 1) * $limit;
-$stmt = $db->prepare("
-    SELECT u.UserID, u.Username, u.Email, r.RoleName, u.IsApproved 
-    FROM users u 
-    JOIN Roles r ON u.RoleID = r.RoleID 
-    LIMIT :limit OFFSET :offset
-");
-$stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-$stmt->execute();
-$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// $page = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
+// $limit = 100;
+// $offset = ($page - 1) * $limit;
+// $stmt = $db->prepare("
+//     SELECT u.UserID, u.Username, u.Email, r.RoleName, u.IsApproved 
+//     FROM users u 
+//     JOIN Roles r ON u.RoleID = r.RoleID 
+//     LIMIT :limit OFFSET :offset
+// ");
+// $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+// $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+// $stmt->execute();
+// $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-$stmt = $db->query("SELECT * FROM messages LIMIT 50");
-$chatbot_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// $stmt = $db->query("SELECT * FROM messages LIMIT 50");
+// $chatbot_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 
