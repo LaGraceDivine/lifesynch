@@ -16,7 +16,6 @@ $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
 $stmt->close();
-var_dump($user);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
   $username = $_POST['username'];
@@ -479,6 +478,7 @@ $conn->close();
 
             xhr.onload = function() {
                 var response = JSON.parse(xhr.responseText);
+                console.log(response);
                 if (response.success) {
                     document.getElementById('profileImg').src = response.profile_picture;
                     document.getElementById('message').innerHTML = "<p style='color: green;'>Profile picture updated successfully!</p>";
