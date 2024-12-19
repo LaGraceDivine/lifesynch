@@ -1,6 +1,6 @@
 <?php
 session_start();
-// include 'dbconnect.php';
+include 'dbconnect.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reminder_time'])) {
     $userId = isset($_SESSION['userId']) ? $_SESSION['userId'] : 0;
