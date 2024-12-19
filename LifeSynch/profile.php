@@ -73,42 +73,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['upload_picture'])) {
-    if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK) {
+    if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK) 
+    {
         $uploadDir = 'uploads/';
         $uploadFile = $uploadDir . basename($_FILES['profile_picture']['name']);
 
         $imageFileType = strtolower(pathinfo($uploadFile, PATHINFO_EXTENSION));
-        if (in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
-            if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $uploadFile)) {
+        if (in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) 
+        {
+            echo $_FILES['profile_picture']['tmp_name'];
+            if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $uploadFile)) 
+            {
                 $stmt = $conn->prepare("UPDATE users SET profile_picture = ? WHERE id = ?");
                 $stmt->bind_param("si", $uploadFile, $userId);
 
-                if ($stmt->execute()) {
+                if ($stmt->execute()) 
+                {
                     echo json_encode([
                         'success' => true,
                         'message' => 'Profile picture updated successfully!',
                         'profile_picture' => $uploadFile
                     ]);
-                } else {
+                }
+                else 
+                {
                     echo json_encode([
                         'success' => false,
                         'message' => 'Error updating profile picture.'
                     ]);
                 }
                 $stmt->close();
-            } else {
+            } 
+            else 
+            {
                 echo json_encode([
                     'success' => false,
                     'message' => 'Error uploading file.'
                 ]);
             }
-        } else {
+        } 
+        else 
+        {
             echo json_encode([
                 'success' => false,
                 'message' => 'Invalid image file type.'
             ]);
         }
-    } else {
+    } 
+    else 
+    {
         echo json_encode([
             'success' => false,
             'message' => 'No file uploaded or upload error.'
