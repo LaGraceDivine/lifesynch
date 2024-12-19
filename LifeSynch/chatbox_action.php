@@ -2,18 +2,11 @@
 session_start();
 
 // Include database connection file
-$included = @include 'dbConnect.php';
-if (!$included) {
-    die('Error: Could not include dbConnect.php. Ensure the file exists and the path is correct.');
-}
-
-$conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
-if ($conn->connect_error) {
-    die("Database connection failed: " . $conn->connect_error);
-}
+include 'dbConnect.php';
 
 // Get the incoming JSON data from the request body
 $inputData = json_decode(file_get_contents('php://input'), true);
+
 
 // Check if the required fields are present
 if (isset($inputData['name']) && isset($inputData['email']) && isset($inputData['question'])) {

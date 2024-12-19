@@ -151,8 +151,11 @@
         body: JSON.stringify({ name, email, question }),
       })
         .then((response) => response.json())
-        .then((data) => {
-          if (data.success) {
+        .then((data) => 
+        {
+          console.log(data);
+          if (data.success) 
+          {
             responseMessage.textContent = "Your message has been sent. We will get back to you!";
             responseMessage.style.display = "block";
 
