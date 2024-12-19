@@ -379,8 +379,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['time'])) {
             // Loop through the reminders and display each one
             foreach ($reminders as $reminder) {
                 echo "<li>" . htmlspecialchars($reminder) . " 
-                    <form action='water-reminder.php' method='POST' style='display:inline;'>
-                        <input type='hidden' name='reminder_time' value='" . htmlspecialchars($reminder) . "'>
+                    <form action='water-reminder.php' method='GET' style='display:inline;'>
+                        <input type='hidden' name='time' value='" . htmlspecialchars($reminder) . "'>
                         <button type='submit' onclick='return confirm(\"Are you sure you drank water? If yes, click OK. If no, please drink first or click Cancel.\")'>Done</button>
                     </form>
                 </li>";
