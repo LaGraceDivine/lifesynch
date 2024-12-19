@@ -45,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['time']))
 
     if ($userId && $reminderTime) 
     {
+        echo "Valid userId and remainder time\n";
         $stmt = $conn->prepare("DELETE FROM water_reminders WHERE user_id = ? AND reminder_time = ?");
         $stmt->bind_param("is", $userId, $reminderTime);
         $stmt->execute();
