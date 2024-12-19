@@ -1,6 +1,24 @@
 <?php
 
 include 'dbConnect.php';
+session_start();
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reminder_time'])) {
+    $userId = isset($_SESSION['userId']) ? $_SESSION['userId'] : 0;
+
+    if ($userId) {
+        $reminderTime = $_POST['reminder_time'];
+        $stmt = $conn->prepare("INSERT INTO water_reminders (user_id, reminder_time) VALUES (?, ?)");
+        $stmt->bind_param("is", $userId, $reminderTime);
+        $stmt->execute();
+        $stmt->close();
+        header("Location: water-reminder.php");
+        exit();
+
+    } else {
+        header("Location: hydration-tracker.php");
+        exit();
+    }
+}
 
 ?>
 
