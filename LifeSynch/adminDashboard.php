@@ -404,9 +404,9 @@ var_dump($chatbot_data);
             </tr>
             <?php foreach ($users as $user): ?>
             <tr>
-                <td><?= htmlspecialchars($user['UserID']) ?></td>
-                <td><?= htmlspecialchars($user['Username']) ?></td>
-                <td><?= htmlspecialchars($user['Email']) ?></td>
+                <td><?= $user['id']?></td>
+                <td><?= htmlspecialchars($user['username']) ?></td>
+                <td><?= htmlspecialchars($user['email']) ?></td>
                 <td><?= htmlspecialchars($user['RoleID']) ?></td>
                 <td><?= htmlspecialchars($user['IsApproved'] ? 'Yes' : 'No') ?></td>
                 <td>
