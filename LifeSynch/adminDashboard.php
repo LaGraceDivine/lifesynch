@@ -1,5 +1,5 @@
 <?php
-include 'dbConnect';
+include 'dbConnect.php';
 session_start();
 var_dump($_SESSION);
 
