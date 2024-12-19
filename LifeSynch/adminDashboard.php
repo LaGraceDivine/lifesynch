@@ -1,14 +1,14 @@
 <?php
 session_start();
 
-require_once 'dbConnect.php';
+include 'dbConnect.php';
 
 try {
     $db = new PDO(DSN, DB_USER, DB_PASSWORD);
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     function isAuthorized() {
-        return isset($_SESSION['role']) && $_SESSION['role'] === 'user';
+        return isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
