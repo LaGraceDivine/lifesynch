@@ -8,7 +8,7 @@ try {
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     function isAuthorized() {
-        return isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
+        return isset($_SESSION['role']) && $_SESSION['role'] === 'user';
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
