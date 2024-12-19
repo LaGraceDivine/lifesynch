@@ -95,22 +95,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
     }
 }
 
+// Get the current page from the query parameter or set to 1 if not set
 $page = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
-$limit = 100;
-$offset = ($page - 1) * $limit;
-$stmt = $db->prepare("
-    SELECT u.UserID, u.Username, u.Email, r.RoleName, u.IsApproved 
-    FROM users u 
-    JOIN Roles r ON u.RoleID = r.RoleID 
-    LIMIT :limit OFFSET :offset
-");
-$stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-$stmt->execute();
-$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-$stmt = $db->query("SELECT * FROM messages LIMIT 50");
-$chatbot_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// Define the number of items per page
+$limit = 100;
+
+// Calculate the offset based on the current page
+$offset = ($page - 1) * $limit;
+
+// Prepare the SQL query for fetching users with pagination
+$query = "
+    SELECT u.UserID, u.Username, u.Email, r.RoleName, u.IsApproved 
+    FROM users u
+    JOIN Roles r ON u.RoleID = r.RoleID
+    LIMIT $limit OFFSET $offset
+";
+
+// Execute the query using mysqli
+$result = mysqli_query($conn, $query);
+
+// Fetch all results as an associative array
+$users = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+// Fetch the chatbot data (last 50 messages)
+$queryMessages = "SELECT * FROM messages LIMIT 50";
+$resultMessages = mysqli_query($conn, $queryMessages);
+$chatbot_data = mysqli_fetch_all($resultMessages, MYSQLI_ASSOC);
 
 ?>
 
