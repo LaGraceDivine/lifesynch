@@ -34,7 +34,6 @@ if ($result->num_rows > 0) {
         $reminders[] = $row['reminder_time'];
     }
 }
-$conn->close();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['time'])) 
 {
@@ -74,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['time']))
         exit();
     }
 }
-
+$conn->close();
 ?>
 
 <!DOCTYPE html>
