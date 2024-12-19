@@ -43,6 +43,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['time']))
     echo "Reminder Time: " . $reminderTime;
     echo "User ID: " . $userId;
 
+    if (!$conn) 
+    {
+        die("Connection failed: " . mysqli_connect_error());
+    }
+
     if ($userId && $reminderTime) 
     {
         echo "Valid userId and remainder time\n";
