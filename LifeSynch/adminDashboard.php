@@ -1,19 +1,18 @@
 <?php
 include 'dbConnect.php';
 session_start();
-var_dump($_SESSION);
 
-// function isAuthorized() 
-// {
-//     return isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
-// }
+function isAuthorized() 
+{
+    return isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') 
 {
-    // if (!isAuthorized()) {
-    //     echo "Unauthorized action.";
-    //     exit;
-    // }
+    if (!isAuthorized()) {
+        echo "Unauthorized action.";
+        exit;
+    }
 
     if (isset($_POST['create'])) {
         $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
@@ -137,10 +136,6 @@ mysqli_stmt_close($stmt);
 
 // Optionally close the database connection
 mysqli_close($conn);
-
-var_dump($users);
-var_dump($chatbot_data);
-
 ?>
 
 
