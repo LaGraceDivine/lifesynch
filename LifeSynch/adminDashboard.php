@@ -1,5 +1,5 @@
 <?php
-include'dbConnect';
+include 'dbConnect';
 
 function isAuthorized() {
     return isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
