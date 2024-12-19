@@ -51,6 +51,7 @@ function fetchApiContent($url) {
 
     return $response;
 }
+$user_role = isset($_SESSION['RoleName']) ? $_SESSION['RoleName'] : '?';
 
 ?>
 
@@ -147,7 +148,6 @@ function fetchApiContent($url) {
         }
 
 
-        /* Boxes Section */
         .boxes {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -196,7 +196,7 @@ function fetchApiContent($url) {
         <ul>
             <li><a href="dashboard.php"><i class="icon-home"></i>Dashboard</a></li>
             <li><a href="profile.php"><i class="icon-profile"></i>Profile</a></li>
-            <?php if ($RoleName == 'admin'): ?>
+            <?php if ($user_role == 'admin'): ?>
             <li><a href="adminDashboard.php"><i class="icon-profile"></i>Admin Dashboard</a></li><?php endif; ?>
             <li><a href="logout_action.php"><i class="icon-logout"></i>Logout</a></li>
         </ul>
