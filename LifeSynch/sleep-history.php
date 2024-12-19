@@ -264,10 +264,10 @@ if ($result) {
             <tbody>
                 <?php foreach ($sleepHistory as $entry): ?>
                     <tr>
-                        <td><?php echo date('F j, Y', strtotime($entry['sleep_time'])); ?></td>
-                        <td><?php echo date('F j, Y', strtotime($entry['wake_time'])); ?></td>
+                        <td><?php echo $entry['sleep_time']; ?></td>
+                        <td><?php echo $entry['wake_time']; ?></td>
                         <td><?php echo $entry['duration']; ?> hours</td>
-                        <td><?php echo date('F j, Y', strtotime($entry['created_at'])); ?></td>
+                        <td><?php echo $entry['created_at']; ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

@@ -7,7 +7,7 @@ if (isset($_POST['user_id']) && isset($_POST['sleep_time'])) {
     $sleep_time = str_replace("T", " ", $sleep_time) . ":00";
     $created_at = date('Y-m-d H:i:s');
     $query = "INSERT INTO sleep_tracker (user_id, sleep_time, wake_time, created_at) 
-              VALUES (?, ?, NULL,?)";
+              VALUES (?, ?, ?,?)";
     if ($stmt = mysqli_prepare($conn, $query)) {
         
         mysqli_stmt_bind_param($stmt, "iss", $user_id, $sleep_time, $created_at);
