@@ -2,6 +2,12 @@
 include 'dbConnect.php';
 session_start();
 
+if (isset($_SESSION['roleId']) && $_SESSION['roleId'] == 2) {
+    header("Location: dashboard.php");
+    exit; 
+}
+
+
 function isAuthorized() 
 {
     return isset($_SESSION['RoleName']) && $_SESSION['RoleName'] === 'admin';
