@@ -309,23 +309,19 @@ $userId = $_SESSION["userId"];
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         
         xhr.onload = function() {
-            // Log the response text to help with debugging
             console.log('Response Text: ' + xhr.responseText);
             
             try {
-                // Attempt to parse the response as JSON
                 var response = JSON.parse(xhr.responseText);
                 alert(response.message);
             } catch (e) {
-                // If parsing fails, log the error and display an alert
                 alert('Error parsing response');
                 console.error('Error:', e);
-                console.error('Response:', xhr.responseText);  // Log the actual response
+                console.error('Response:', xhr.responseText);
             }
-        };
+        }
 
         xhr.onerror = function() {
-            // If the request fails entirely (network or server error), log it
             alert('Request failed');
             console.error('Request failed with status:', xhr.status);
         };

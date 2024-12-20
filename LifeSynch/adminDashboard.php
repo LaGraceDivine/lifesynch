@@ -2,18 +2,17 @@
 include 'dbConnect.php';
 session_start();
 
-function isAuthorized() 
-{
-    return isset($_SESSION['RoleName']) && $_SESSION['RoleName'] === 'admin';
-}
+if($_SESSION['roleId']==1){
+
+    header('Location: dashboard.php');
+    exit();
+
+ }
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') 
 {
-    if (!isAuthorized()) {
-        echo "Unauthorized action.";
-        exit;
-    }
-
+   
     if (isset($_POST['create'])) {
         $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
         $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
@@ -373,7 +372,11 @@ mysqli_close($conn);
         </nav>
     </div>
 
-    <h1>Admin Dashboard</h1>
+    <?php
+
+    
+
+        
 
     <section id="users">
         <h2>List of Users</h2>
