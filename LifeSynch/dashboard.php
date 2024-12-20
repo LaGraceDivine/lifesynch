@@ -198,7 +198,8 @@ $user_role = isset($_SESSION['RoleID']) ? $_SESSION['RoleID'] : '?';
             <li><a href="profile.php"><i class="icon-profile"></i>Profile</a></li>
             <?php
 
-              if($_SESSION['roleId']==2){
+          if(isset($_SESSION['roleId']) && $_SESSION['roleId']==1){
+    
 
                  echo "<li><a href='adminDashboard.php'><i class='icon-profile'></i>Admin Dashboard</a></li>";
 
