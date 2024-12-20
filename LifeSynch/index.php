@@ -1,3 +1,13 @@
+<?php
+
+session_start();
+
+
+
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -350,8 +360,37 @@
       <h2>Welcome to LifeSynch</h2>
       <p>Please choose an option to continue:</p>
       <div class="modal-buttons">
-        <a href="login.php" class="btn-secondary">Login</a>
-        <a href="register.php" class="btn-secondary">Register</a>
+
+      <?php
+            if (isset($_SESSION['userId'])) {
+                echo "<a href='login.php' class='btn-secondary'>Login</a>";
+            }
+
+            echo "<li><a href='dashboard.php'><i class='icon-home'></i>Dashboard</a></li>";
+            echo "<li><a href='profile.php'><i class='icon-profile'></i>Profile</a></li>";
+
+            if (isset($_SESSION['roleId']) && $_SESSION['roleId'] == 2) {
+                echo "<li><a href='adminDashboard.php'><i class='icon-profile'></i>Admin Dashboard</a></li>";
+            }
+
+            if(isset($_SESSION['userId'])){
+
+            echo "<li><a href='logout_action.php'><i class='icon-logout'></i>Logout</a></li>";
+
+            }
+            else{
+
+              echo "<a href='login.php' class='btn-secondary'>Login</a>";
+
+             echo "<a href='register.php' class='btn-secondary'>Register</a>";
+
+            }
+
+
+        ?>
+
+        
+       
       </div>
     </div>
   </div>
