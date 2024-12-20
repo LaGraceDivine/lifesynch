@@ -2,7 +2,7 @@
 include 'dbConnect.php';
 session_start();
 
-if (isset($_SESSION['roleId']) && $_SESSION['roleId'] == 2) {
+if (isset($_SESSION['roleId']) && $_SESSION['roleId'] == 1) {
     header("Location: dashboard.php");
     exit; 
 }
