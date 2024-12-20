@@ -2,9 +2,6 @@
 
 session_start();
 
-
-
-
 ?>
 
 
@@ -364,28 +361,22 @@ session_start();
       <?php
             if (isset($_SESSION['userId'])) {
                 echo "<a href='login.php' class='btn-secondary'>Login</a>";
-            }
-
-            echo "<li><a href='dashboard.php'><i class='icon-home'></i>Dashboard</a></li>";
-            echo "<li><a href='profile.php'><i class='icon-profile'></i>Profile</a></li>";
-
-            if (isset($_SESSION['roleId']) && $_SESSION['roleId'] == 2) {
-                echo "<li><a href='adminDashboard.php'><i class='icon-profile'></i>Admin Dashboard</a></li>";
-            }
-
-            if(isset($_SESSION['userId'])){
-
-            echo "<li><a href='logout_action.php'><i class='icon-logout'></i>Logout</a></li>";
-
+                echo "<li><a href='dashboard.php'><i class='icon-home'></i>Dashboard</a></li>";
+                echo "<li><a href='profile.php'><i class='icon-profile'></i>Profile</a></li>";
+                echo "<li><a href='logout_action.php'><i class='icon-logout'></i>Logout</a></li>";
             }
             else{
 
               echo "<a href='login.php' class='btn-secondary'>Login</a>";
 
-             echo "<a href='register.php' class='btn-secondary'>Register</a>";
-
+              echo "<a href='register.php' class='btn-secondary'>Register</a>";
             }
 
+  
+
+            if (isset($_SESSION['roleId']) && $_SESSION['roleId'] == 2) {
+                echo "<li><a href='adminDashboard.php'><i class='icon-profile'></i>Admin Dashboard</a></li>";
+            }
 
         ?>
 
