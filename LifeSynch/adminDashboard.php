@@ -2,19 +2,24 @@
 include 'dbConnect.php';
 session_start();
 
-if (isset($_SESSION['roleId']) && $_SESSION['roleId'] == 1) {
-    header("Location: dashboard.php");
-    exit();
+function isAuthorized() 
+{
+    return isset($_SESSION['RoleName']) && $_SESSION['RoleName'] === 'admin';
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') 
+{
+    if (!isAuthorized()) {
+        echo "Unauthorized action.";
+        exit;
+    }
+
     if (isset($_POST['create'])) {
         $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
         $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
         $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING);
         $role_id = filter_input(INPUT_POST, 'role_id', FILTER_SANITIZE_NUMBER_INT);
 
-        // Check Role ID
         $roleCheckStmt = $db->prepare("SELECT COUNT(*) FROM Roles WHERE RoleID = ?");
         $roleCheckStmt->execute([$role_id]);
         if ($roleCheckStmt->fetchColumn() == 0) {
@@ -29,38 +34,97 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $email,
                 password_hash($password, PASSWORD_DEFAULT),
                 $role_id,
-                0 // Default approval
+                1234
             ]);
             echo "User created successfully.";
         } else {
             echo "Invalid input for creating a user.";
         }
     }
+
+    if (isset($_POST['update'])) {
+        $user_id = filter_input(INPUT_POST, 'user_id', FILTER_SANITIZE_NUMBER_INT);
+        $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
+        $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+        $role_id = filter_input(INPUT_POST, 'role_id', FILTER_SANITIZE_NUMBER_INT);
+
+        $roleCheckStmt = $db->prepare("SELECT COUNT(*) FROM Roles WHERE RoleID = ?");
+        $roleCheckStmt->execute([$role_id]);
+        if ($roleCheckStmt->fetchColumn() == 0) {
+            echo "Invalid RoleID.";
+            exit;
+        }
+
+        if ($user_id && $username && $email && $role_id) {
+            $stmt = $db->prepare("UPDATE users SET Username = ?, Email = ?, RoleID = ? WHERE UserID = ?");
+            $stmt->execute([
+                $username,
+                $email,
+                $role_id,
+                $user_id
+            ]);
+            echo "User updated successfully.";
+        } else {
+            echo "Invalid input for updating a user.";
+        }
+    }
+
+    if (isset($_POST['delete'])) {
+        $user_id = filter_input(INPUT_POST, 'user_id', FILTER_SANITIZE_NUMBER_INT);
+
+        if ($user_id) {
+            $stmt = $db->prepare("DELETE FROM users WHERE UserID = ?");
+            $stmt->execute([$user_id]);
+            echo "User deleted successfully.";
+        } else {
+            echo "Invalid input for deleting a user.";
+        }
+    }
+
+    if (isset($_POST['approve'])) {
+        $user_id = filter_input(INPUT_POST, 'user_id', FILTER_SANITIZE_NUMBER_INT);
+
+        if ($user_id) {
+            $stmt = $db->prepare("UPDATE users SET IsApproved = 1 WHERE UserID = ?");
+            $stmt->execute([$user_id]);
+            echo "User approved successfully.";
+        } else {
+            echo "Invalid input for approving a user.";
+        }
+    }
 }
 
-// Pagination
 $page = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
+
+
 $limit = 100;
+
 $offset = ($page - 1) * $limit;
 
-// Fetch Users
-$stmt = $db->prepare("
+$query = "
     SELECT u.id, u.username, u.email, r.RoleName, u.IsApproved 
     FROM users u
     JOIN Roles r ON u.RoleID = r.RoleID
     LIMIT ? OFFSET ?
-");
-$stmt->bindValue(1, $limit, PDO::PARAM_INT);
-$stmt->bindValue(2, $offset, PDO::PARAM_INT);
-$stmt->execute();
-$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+";
 
-// Fetch Messages
+$stmt = mysqli_prepare($conn, $query);
+
+mysqli_stmt_bind_param($stmt, "ii", $limit, $offset);
+
+mysqli_stmt_execute($stmt);
+
+$result = mysqli_stmt_get_result($stmt);
+
+$users = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
 $queryMessages = "SELECT * FROM messages LIMIT 50";
-$resultMessages = $db->query($queryMessages);
-$chatbot_data = $resultMessages->fetchAll(PDO::FETCH_ASSOC);
+$resultMessages = mysqli_query($conn, $queryMessages);
+$chatbot_data = mysqli_fetch_all($resultMessages, MYSQLI_ASSOC);
 
-$db = null;
+mysqli_stmt_close($stmt);
+
+mysqli_close($conn);
 ?>
 
 
@@ -309,11 +373,7 @@ $db = null;
         </nav>
     </div>
 
-    <?php
-
-    
-
-        
+    <h1>Admin Dashboard</h1>
 
     <section id="users">
         <h2>List of Users</h2>
