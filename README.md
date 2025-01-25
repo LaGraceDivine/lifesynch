@@ -42,7 +42,7 @@ You can create an account and login.
 If you want to explore the admin side, you can text the developer for access or check the codes available.
 
 Link to Website
-You can access the live version of LifeSynch here: 
+You can access the live version of LifeSynch here: http://34.35.78.17
 
 User / Customer
 Target Audience: Individuals with internet access who want to live a healthier lifestyle by staying accountable and motivated.
